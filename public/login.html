@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <main>
+    <h1>Welcome to Daniel's Firebase App</h1>
+
+    <form action="">
+        <h1>Login</h1>
+      <input id="email" type="email" placeholder="Enter your email"> <br><br>
+      <input id="password" type="password" placeholder="******"> <br><br>
+      <button onclick="registerUser(event)">Sign up</button>
+    </form>
+  </main>
+</body>
+</html>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBP3K0Rl5Xw0x5x_PCRTgmU4md0rd9UG6g",
+    authDomain: "fir-october-50762.firebaseapp.com",
+    projectId: "fir-october-50762",
+    storageBucket: "fir-october-50762.appspot.com",
+    messagingSenderId: "198750504324",
+    appId: "1:198750504324:web:c07357af3110fc40e909d1"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+  let email = document.getElementById("email")
+  let password = document.getElementById("password")
+
+  function registerUser(ev){
+    ev.preventDefault()
+    firebase.auth().signInWithEmailAndPassword(email.value, password.value)
+  .then((userCredential) => {
+    // Signed in
+    var user = userCredential.user;
+    alert("Login successful")
+    window.location.href = "dashboard.html"
+  })
+  .catch((error) => {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+  }
+</script>
