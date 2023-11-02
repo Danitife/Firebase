@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+            src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+        <script
+            src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+        <script
+            src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+        <script
+            src="https://www.gstatic.com/firebasejs/10.5.2/firebase-storage-compat.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBP3K0Rl5Xw0x5x_PCRTgmU4md0rd9UG6g",
+      authDomain: "fir-october-50762.firebaseapp.com",
+      projectId: "fir-october-50762",
+      storageBucket: "fir-october-50762.appspot.com",
+      messagingSenderId: "198750504324",
+      appId: "1:198750504324:web:c07357af3110fc40e909d1"
+    };
+  
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    var storageRef = firebase.storage().ref();
+</script>
+
+<script>
+    let postID = localStorage.getItem("postID")
+    console.log(postID);
+
+    function getDocument(){
+        var docRef = db.collection("blogs").doc(postID);
+
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", doc.data());
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }
+    getDocument()
+</script>
