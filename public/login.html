@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <main>
+        <form action="">
+            <h1>Login</h1>
+            <input id="email" type="email"><br><br>
+            <input id="password" type="password"><br><br>
+            <button onclick="login(event)">Login</button>
+        </form>
+        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+    </main>
+</body>
+
+</html>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCN8FLqNUozPNzszaFrVzHIvIjwPqoRPO0",
+        authDomain: "febuary-firebase.firebaseapp.com",
+        projectId: "febuary-firebase",
+        storageBucket: "febuary-firebase.appspot.com",
+        messagingSenderId: "633527299065",
+        appId: "1:633527299065:web:b74ae2112ab9c4b4232b28"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+</script>
+<script>
+    let email = document.getElementById("email")
+    let password = document.getElementById("password")
+
+    function login(ev) {
+        ev.preventDefault();
+        firebase.auth().signInWithEmailAndPassword(email.value, password.value)
+            .then((userCredential) => {
+                // Signed in
+                var user = userCredential.user;
+                alert("Logging in")
+                window.location.href = "index.html"
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                alert(errorMessage)
+            });
+    }
+</script>

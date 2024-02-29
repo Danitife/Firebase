@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <main>
+        <form action="">
+            <h1>Register</h1>
+            <input id="username" type="text"><br><br>
+            <input id="email" type="email"><br><br>
+            <input id="password" type="password"><br><br>
+            <button onclick="register(event)">Register</button>
+            <div>
+                <hr>
+                <span>or</span>
+                <hr>
+            </div>
+            <div>
+                <button onclick="withGoogle(event)">Sign in with Google</button>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCN8FLqNUozPNzszaFrVzHIvIjwPqoRPO0",
+        authDomain: "febuary-firebase.firebaseapp.com",
+        projectId: "febuary-firebase",
+        storageBucket: "febuary-firebase.appspot.com",
+        messagingSenderId: "633527299065",
+        appId: "1:633527299065:web:b74ae2112ab9c4b4232b28"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    var provider = new firebase.auth.GoogleAuthProvider();
+</script>
+
+<script>
+    let username = document.getElementById("username")
+    let email = document.getElementById("email")
+    let password = document.getElementById("password")
+
+    function register(ev) {
+        ev.preventDefault()
+        firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+            .then((userCredential) => {
+                // Signed in 
+                var user = userCredential.user;
+                // const user = firebase.auth().currentUser;
+
+                user.updateProfile({
+                    displayName: username.value,
+                }).then(() => {
+                    alert("Registration Successfull")
+                    window.location.href = "login.html"
+                }).catch((error) => {
+                    console.log(error);
+                });
+                
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorMessage);
+            });
+    }
+
+    function withGoogle(ev) {
+        ev.preventDefault();
+        firebase.auth()
+            .signInWithPopup(provider)
+            .then((result) => {
+                /** @type {firebase.auth.OAuthCredential} */
+                var credential = result.credential;
+
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                alert("Registration Successfull")
+                window.location.href = "index.html"
+                // IdP data available in result.additionalUserInfo.profile.
+                // ...
+            }).catch((error) => {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+            });
+    }
+</script>

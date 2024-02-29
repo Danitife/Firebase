@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-3">
+            <h1><a href="index.html">Post Product</a></h1>
+            <h1>View Product</h1>
+        </div>
+        <div class="col">
+            <div id="loader"></div>
+            <main id="disp"></main>
+        </div>
+    </div>
+    <div style="width: 300px; height: 300px; border: 1px solid red;" contenteditable="true"></div>
+    <button onclick="bbb()">B</button>
+    <button onclick="itt()">I</button>
+</body>
+
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCN8FLqNUozPNzszaFrVzHIvIjwPqoRPO0",
+        authDomain: "febuary-firebase.firebaseapp.com",
+        projectId: "febuary-firebase",
+        storageBucket: "febuary-firebase.appspot.com",
+        messagingSenderId: "633527299065",
+        appId: "1:633527299065:web:b74ae2112ab9c4b4232b28"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+</script>
+
+<script>
+    let loading = false;
+    function bbb() {
+        document.execCommand("bold")
+    }
+    function itt() {
+        document.execCommand("italic")
+    }
+    function isLoggedIn() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/v8/firebase.User
+                var uid = user.uid;
+            } else {
+                // User is signed out
+                console.log("There's no user");
+                alert("you're not logged in")
+                window.location.href = "login.html"
+            }
+        });
+    }
+
+    let disp = document.getElementById("disp")
+    let loader = document.getElementById("loader")
+    function dispProduct() {
+        loader.innerHTML = `
+            <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+            </div>
+        `
+        disp.innerHTML = ""
+        db.collection("products").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                loader.innerHTML = ""
+                disp.innerHTML += `
+            <div class="card my-3 p-3">
+                <div>
+                    <button onclick="delProd('${doc.id}')" class="btn btn-danger btn-sm">&times;</button>
+                </div>
+                <h4>${doc.data().prod_name}</h4>
+                <img class="w-25 h-25" src="${doc.data().prod_img}" />
+                <p>${doc.data().prod_desc}</p>
+                <div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop${doc.id}">
+                    See more
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop${doc.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel${doc.id}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel${doc.id}">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <img class="w-100" src="${doc.data().prod_img}" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>   
+                                    </div>
+                                </div>
+        `
+            });
+        });
+    }
+    dispProduct()
+
+    function delProd(id) {
+        console.log(id);
+        db.collection("products").doc(id).delete().then(() => {
+            console.log("Document successfully deleted!");
+            dispProduct()
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+
+    }
+</script>
